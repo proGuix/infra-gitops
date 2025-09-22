@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://REPO_URL/infra-gitops.git
-    targetRevision: REVISION
+    repoURL: https://github.com/proGuix/infra-gitops
+    targetRevision: HEAD
     path: apps/nginx/overlays/dev
   destination:
     server: https://kubernetes.default.svc
@@ -18,4 +18,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      
