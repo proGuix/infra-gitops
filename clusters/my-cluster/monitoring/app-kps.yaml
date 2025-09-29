@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prom-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 77.10.0
+      helm:
+        releaseName: kps
+        valueFiles:
+          - $values/clusters/my-cluster/monitoring/kps-values.yaml
+
+    - repoURL: https://github.com/proGuix/infra-gitops
+      targetRevision: HEAD
+      ref: values
+
+    - repoURL: https://github.com/proGuix/infra-gitops
+      targetRevision: HEAD
+      path: clusters/my-cluster/monitoring/manifests
+      directory:
+        recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

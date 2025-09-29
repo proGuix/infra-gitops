@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nginx-rules
+  namespace: monitoring
+  labels:
+    release: kps
+spec:
+  groups:
+  - name: nginx.availability
+    rules:
+    - alert: NginxDeploymentNotAvailable
+      expr: |
+        sum by (namespace, deployment) (
+          kube_deployment_status_replicas_available{deployment=~".*nginx.*"}
+        ) <
+        sum by (namespace, deployment) (
+          kube_deployment_spec_replicas{deployment=~".*nginx.*"}
+        )
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Nginx deployment not fully available"
+        description: "{{ $labels.namespace }}/{{ $labels.deployment }} has fewer available replicas than desired."
+        

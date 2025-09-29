@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-nginx
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: grafana-dashboards
+  annotations:
+    k8s-sidecar-target-directory: "/tmp/dashboards"
+    k8s-sidecar-folder: "NGINX"
+
+data:
+  nginx-overview.json: |
+    {
+      "schemaVersion": 38,
+      "title": "NGINX Overview",
+      "timezone": "browser",
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "HTTP Requests (rate)",
+          "targets": [{
+            "expr": "rate(http_requests_total[5m])",
+            "legendFormat": "{{instance}}"
+          }]
+        },
+        {
+          "type": "timeseries",
+          "title": "Pod CPU (rate)",
+          "targets": [{
+            "expr": "rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\"}[5m])",
+            "legendFormat": "{{pod}}"
+          }]
+        }
+      ],
+      "time": { "from": "now-1h", "to": "now" }
+    }
+    
