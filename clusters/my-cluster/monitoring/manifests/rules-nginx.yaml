@@ -12,11 +12,12 @@ spec:
     - alert: NginxDeploymentNotAvailable
       expr: |
         sum by (namespace, deployment) (
-          kube_deployment_status_replicas_available{deployment=~".*nginx.*"}
-        ) <
+          kube_deployment_status_replicas_unavailable{deployment=~".*nginx.*"}
+        ) > 0
+        and on(namespace, deployment)
         sum by (namespace, deployment) (
           kube_deployment_spec_replicas{deployment=~".*nginx.*"}
-        )
+        ) > 0
       for: 2m
       labels:
         severity: warning
