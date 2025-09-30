@@ -42,3 +42,5 @@ alertmanager:
             title: '{{ template "slack.default.title" . }}'
             text: >-
               *{{ .CommonLabels.alertname }}* in *{{ .CommonLabels.namespace }}*
+  service:
+    type: LoadBalancer
