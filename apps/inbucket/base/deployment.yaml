@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inbucket
+  labels: { app: inbucket }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: inbucket }
+  template:
+    metadata:
+      labels: { app: inbucket }
+    spec:
+      containers:
+        - name: inbucket
+          image: inbucket/inbucket:latest
+          ports:
+            - name: smtp    # SMTP
+              containerPort: 2500
+            - name: http    # UI web
+              containerPort: 9000
+            - name: pop3
+              containerPort: 1100
+            - name: imap
+              containerPort: 1430
+          readinessProbe:
+            httpGet: { path: /healthz, port: 9000 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /healthz, port: 9000 }
+            initialDelaySeconds: 10
+            periodSeconds: 20

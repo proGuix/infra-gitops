@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: inbucket
+  labels: { app: inbucket }
+spec:
+  selector: { app: inbucket }
+  type: LoadBalancer
+  ports:
+    - name: smtp
+      port: 2500
+      targetPort: 2500
+    - name: http
+      port: 9000
+      targetPort: 9000
+    - name: pop3
+      port: 1100
+      targetPort: 1100
+    - name: imap
+      port: 1430
+      targetPort: 1430
