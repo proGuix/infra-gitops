@@ -23,19 +23,27 @@ prometheus:
     type: LoadBalancer
 
 alertmanager:
-  alertmanagerSpec:
-    resources:
-      requests: { cpu: 100m, memory: 256Mi }
   config:
     global:
-      smtp_smarthost: "inbucket.mail.svc.cluster.local:2500"
+      resolve_timeout: 5m
+      smtp_smarthost: "inbucket.mail.svc.cluster.local:2500"   # ou <EXTERNAL-IP>:2500 si tu utilises MetalLB
       smtp_from: "alertmanager@example.local"
+
+    # Aucune référence à 'null' ici
     route:
       receiver: local-email
+      group_by: ["namespace","alertname"]
+      group_wait: 10s
+      group_interval: 1m
+      repeat_interval: 30m
+      routes: []   # important: on vide explicitement les sous-routes
+
     receivers:
       - name: local-email
         email_configs:
           - to: "test@example.local"
             send_resolved: true
+
+    templates: []  # explicite (évite d’hériter d’un chemin par défaut)
   service:
     type: LoadBalancer
