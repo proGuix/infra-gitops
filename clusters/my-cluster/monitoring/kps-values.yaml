@@ -26,8 +26,9 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
-      smtp_smarthost: "inbucket.mail.svc.cluster.local:2500"   # ou <EXTERNAL-IP>:2500 si tu utilises MetalLB
+      smtp_smarthost: "inbucket.mail.svc.cluster.local:2500"
       smtp_from: "alertmanager@example.local"
+      smtp_require_tls: false
 
     # Aucune référence à 'null' ici
     route:
