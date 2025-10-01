@@ -23,11 +23,3 @@ spec:
               containerPort: 1100
             - name: imap
               containerPort: 1430
-          readinessProbe:
-            httpGet: { path: /healthz, port: 9000 }
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet: { path: /healthz, port: 9000 }
-            initialDelaySeconds: 10
-            periodSeconds: 20
